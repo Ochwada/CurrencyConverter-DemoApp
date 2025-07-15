@@ -16,7 +16,8 @@ import org.springframework.web.client.RestTemplate;
  * - This class provides a single {@link org.springframework.web.client.RestTemplate} bean, which can be injected into
  * other components (e.g., {@link com.ochwada.currency_converter.client.CurrencyApiClient}) to perform HTTP requests to
  * external APIs.
- * Objective: Centralize configuration and reuse of the RestTemplate instance across the application.
+ * Objective: Centralize the creation and reuse of a {@code RestTemplate} instance to promote clean and maintainable
+ * REST client configuration across the application.
  * *******************************************************
  */
 
@@ -31,12 +32,12 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     /**
-     * Creates and provides a singleton {@link RestTemplate} bean.
+     * Creates and exposes a {@link RestTemplate} bean for making HTTP requests.
      *
-     * @return a new instance of {@code RestTemplate}
+     * @return a default RestTemplate instance
      */
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 }
