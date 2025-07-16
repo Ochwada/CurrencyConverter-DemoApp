@@ -63,7 +63,7 @@ public class ConversionService {
      * Saves a currency conversion record to the MongoDB <strong>"conversion"</strong> collection.
      * *
      * This method first fetches the current exchange rate between the provided source and target currencies
-     * using {@link CurrencyApiClient#getExchangeRate(String, String)}. It then populates the {@link Conversion}
+     * using {@link CurrencyApiClient#getExchangeRate(String, String, double)}. It then populates the {@link Conversion}
      * object with the current exchange rate, default amount (1.0), and the calculated converted amount before
      * saving it using {@link ConversionRepository#insert(Object)}.
      *
@@ -77,11 +77,11 @@ public class ConversionService {
         //return repository.insert(conversion);
         CurrencyApiClient.CurrencyData currencyData = client.getExchangeRate(
                 conversion.getSourceCurrency(),
-                conversion.getTargetCurrency()
+                conversion.getTargetCurrency(),
+                conversion.getAmount()
         );
 
         // Populate conversion object with the fetched data
-        conversion.setAmount(currencyData.getAmount());
         conversion.setExchangeRate(currencyData.getExchangeRate());
         conversion.setConvertedAmount(currencyData.getConvertedAmount());
 

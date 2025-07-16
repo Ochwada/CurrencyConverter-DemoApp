@@ -84,7 +84,7 @@ public class CurrencyApiClient {
      *          - and the converted amount
      * @throws RuntimeException if the API call fails or the rate cannot be parsed
      */
-    public CurrencyData getExchangeRate(String sourceCurrency, String targetCurrency) {
+    public CurrencyData getExchangeRate(String sourceCurrency, String targetCurrency, double amount) {
         // Construct the API request URL using source and target currencies
         String url = String.format(
                 "%s?apikey=%s&base_currency=%s&currencies=%s",
@@ -109,9 +109,6 @@ public class CurrencyApiClient {
 
             // Extract the rate as a double
             double rate = rateNode.asDouble();
-
-            // Assume base amount of 1.0 unit
-            double amount = 1.0;
 
             // Calculate converted amount using the exchange rate
             double converted = amount * rate;

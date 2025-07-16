@@ -60,13 +60,20 @@ To build and run the Currency Converter App, the following dependencies are incl
 ##  API Endpoint Documentation
 Briefly explanation of the available REST endpoints:
 
+| Method   | Endpoint               | Description                                                                     |
+|----------|------------------------|---------------------------------------------------------------------------------|
+| `POST`   | `/api/conversion`      | Converts an amount from one currency to another and saves the conversion record |
+| `GET`    | `/api/conversion`      | Retrieves a list of all saved currency conversion records                       |
+| `GET`    | `/api/conversion/{id}` | Retrieves a specific currency conversion record by its unique ID                |
+| `DELETE` | `/api/conversion/{id}` | Deletes a specific conversion record by its unique ID from the database         |
 
-| Method | Endpoint       | Description                                     |
-|--------|----------------|-------------------------------------------------|
-| `POST` | `/api/convert` | Converts an amount from one currency to another |
 
 <br>
 <br>
+
+## Results Example
+![Add a new Conversion ](assets/addConversion.png)
+
 <br>
 <br>
 <br>
