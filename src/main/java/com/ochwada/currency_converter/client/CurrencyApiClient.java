@@ -3,6 +3,7 @@ package com.ochwada.currency_converter.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -76,10 +77,14 @@ public class CurrencyApiClient {
      *
      * @param sourceCurrency the 3-letter ISO code of the source currency (e.g., "USD")
      * @param targetCurrency the 3-letter ISO code of the target currency (e.g., "EUR")
-     * @return the exchange rate from sourceCurrency to targetCurrency
+     * @return a {@link CurrencyData} object containing:
+     *          - the source and target currency codes,
+     *          - the amount (default is 1.0),
+     *          - the exchange rate,
+     *          - and the converted amount
      * @throws RuntimeException if the API call fails or the rate cannot be parsed
      */
-    public double getExchangeRate(String sourceCurrency, String targetCurrency) {
+    public CurrencyData getExchangeRate(String sourceCurrency, String targetCurrency) {
         // Construct the API request URL using source and target currencies
         String url = String.format(
                 "%s?apikey=%s&base_currency=%s&currencies=%s",
@@ -95,16 +100,42 @@ public class CurrencyApiClient {
 
             // Parse the JSON response to extract the exchange rate
             JsonNode root = objectMapper.readTree(response);
-            JsonNode data = root.path("data").path(targetCurrency);
+            JsonNode rateNode = root.path("data").path(targetCurrency);
 
-            // Return the exchange rate value
-            return data.asDouble();
+            // Check if the rate node exists in the response
+            if (rateNode.isMissingNode()) {
+                throw new RuntimeException("Currency rate not found for " + targetCurrency);
+            }
+
+            // Extract the rate as a double
+            double rate = rateNode.asDouble();
+
+            // Assume base amount of 1.0 unit
+            double amount = 1.0;
+
+            // Calculate converted amount using the exchange rate
+            double converted = amount * rate;
+
+            // Return all information wrapped in a CurrencyData object
+            return new CurrencyData(sourceCurrency, targetCurrency, amount, rate, converted);
+
         } catch (Exception e) {
             // Wrap any exceptions in a RuntimeException with a custom message
-            throw new RuntimeException("Failed to fetch currency conversion data: " + e.getMessage());
+            throw new RuntimeException("Failed to fetch currency conversion data: " + e.getMessage(), e);
         }
     }
 
+    // =======================================CurrencyData POJO ==================================================
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CurrencyData {
 
+        private String sourceCurrency;
+        private String targetCurrency;
+        private double amount;
+        private double exchangeRate;
+        private double convertedAmount;
+    }
 
 }
