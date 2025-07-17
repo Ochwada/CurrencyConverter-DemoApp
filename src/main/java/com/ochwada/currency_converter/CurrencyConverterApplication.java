@@ -31,23 +31,23 @@ public class CurrencyConverterApplication {
 				.ignoreIfMissing()
 				.load();
 
-		// Retrieve and set MongoDB URI (Set the URI as a system property if found, so Spring Boot can use it)
-		String uri_mongo = dotenv.get("MONGODB_URI");
-		if (uri_mongo != null ){
-			System.setProperty("MONGODB_URI", uri_mongo);
-			System.out.println("✅ MONGODB_URI loaded and set.");
-		}else {
-			System.out.println("⚠\uFE0F MONGODB_URI not found in .env file. Skipping System.setProperty.");
-		}
+		// List of environment variables
+		String[] envVars = {
+				"MONGODB_URI",
+				"FREECURRENCY_APIKEY"
+		};
 
+		// Iterate through each variable and set it if present
+		for (String key : envVars){
 
-		// Retrieve and set Free Currency API key for Spring Boot
-		String free_currency = dotenv.get("FREECURRENCY_APIKEY");
-		if (free_currency != null){
-			System.setProperty("FREECURRENCY_APIKEY", free_currency);
-			System.out.println("✅ FREECURRENCY_APIKEY loaded and set." );
-		}else {
-			System.out.println("⚠\uFE0F FREECURRENCY_APIKEY not found in .env file. Skipping System.setProperty.");
+			String value = dotenv.get(key);
+
+			if (value != null){
+				System.setProperty(key, value);
+				System.out.println("✅ " + key + " loaded and set.");
+			} else {
+				System.out.println("⚠\uFE0F" + key + " not found in .env file. Skipping System.setProperty.");
+			}
 		}
 
 	}
